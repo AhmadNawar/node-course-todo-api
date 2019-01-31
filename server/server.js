@@ -41,10 +41,6 @@ app.get('/todos', (req, res) => {
     })
 });
 
-app.listen(3000, () => {
-    console.log('Started on port 3000')
-});
-
 app.get('/todos/:id', (req, res) => {
     var id = req.params.id;
     if (!ObjectID.isValid(id)) {
@@ -63,7 +59,11 @@ app.get('/todos/:id', (req, res) => {
         });
     }
 
-})
+});
+
+app.listen(3000, () => {
+    console.log('Started on port 3000')
+});
 module.exports = {
     app
 };
