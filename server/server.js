@@ -87,7 +87,7 @@ app.patch('/todos/:id', (req, res) => {
     var body = _.pick(req.body, ['text', 'completed']);
 
     if (!ObjectID.isValid(id)) {
-        return res.status(500).send();
+        return res.status(400).send();
     }
 
     if (_.isBoolean(body.completed) && body.completed) {
