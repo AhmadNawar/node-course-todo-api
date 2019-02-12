@@ -33,7 +33,6 @@ app.post('/todos', (req, res) => {
     todo.save().then((doc) => {
         res.send(doc);
     }, (e) => {
-        console.log('error found ', e);
         res.status(400).send(e);
     });
 });
