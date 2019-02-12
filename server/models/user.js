@@ -46,10 +46,13 @@ UserSchema.methods.generateAuthToken = function () {
         _id: user._id.toHexString(),
         access
     }, 'abc123').toString();
-    user.tokens = user.tokens.concat([{
-        access,
-        token
-    }]);
+    if (user.tokens.length == 0) { //check if the array is empty to prevent adding token again in subsquent uses
+        user.tokens = user.tokens.concat([{
+            access,
+            token
+        }]);
+    }
+
     return user.save().then((user) => {
         return token;
     });
@@ -67,6 +70,28 @@ UserSchema.statics.findByToken = function (token) {
         '_id': decoded._id,
         'tokens.token': token,
         'tokens.access': 'auth'
+    });
+};
+
+UserSchema.statics.findByCredentials = function (email, password) {
+    var User = this;
+    return User.findOne({
+        email
+    }).then((user) => {
+        if (!user) {
+            return Promise.reject();
+        }
+
+        return new Promise((resolve, reject) => {
+            bcrypt.compare(password, user.password, (err, res) => {
+                if (res) {
+                    resolve(user);
+                } else {
+                    reject(err);
+                }
+
+            });
+        });
     });
 };
 
