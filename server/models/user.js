@@ -46,17 +46,28 @@ UserSchema.methods.generateAuthToken = function () {
         _id: user._id.toHexString(),
         access
     }, 'abc123').toString();
-    if (user.tokens.length == 0) { //check if the array is empty to prevent adding token again in subsquent uses
-        user.tokens = user.tokens.concat([{
-            access,
-            token
-        }]);
-    }
 
+    user.tokens = user.tokens.concat([{
+        access,
+        token
+    }]);
     return user.save().then((user) => {
         return token;
     });
+};
+
+UserSchema.methods.removeToken = function (token) {
+    var user = this;
+
+    return user.update({
+        $pull: {
+            tokens: {
+                token
+            }
+        }
+    });
 }
+
 UserSchema.statics.findByToken = function (token) {
     var User = this;
     var decoded;
